@@ -1,8 +1,8 @@
 # NovaRose AI
 
-Sprint 1 builds the first production-quality version of `novaroseai.com`: a premium dark-mode marketing website plus a small reusable foundation for future AI agent demos.
+Sprint 2 adds the Rose AI Engine on top of the Sprint 1 marketing website. The goal is a reusable AI employee foundation, not a generic chatbot.
 
-This sprint intentionally does not include auth, dashboards, RAG, Supabase integration, payments, live OpenAI calls, full CRM sync, or production n8n workflows.
+This version intentionally does not include auth, dashboards, persistent external vector storage, Supabase integration, payments, full CRM sync, or production n8n workflows.
 
 ## Run Locally
 
@@ -31,27 +31,54 @@ The app uses Next.js App Router, TypeScript, and Tailwind CSS.
 - `apps/web/src/components/marketing`: Marketing-specific components such as `Navbar`, `Footer`, `ServiceCard`, `PricingCard`, and `FAQItem`.
 - `apps/web/src/components/agent`: Sprint 1 mock AI Sales Agent widget.
 - `apps/web/src/agents`: Agent configuration files for NovaRose AI and future demos.
-- `apps/web/src/lib`: Small shared helpers.
-- `apps/web/src/types`: Shared TypeScript types.
+- `apps/web/src/lib/conversation`: Reusable conversation engine, stage resolver, lead extraction, scoring, OpenAI Responses + embeddings RAG service, and `ConversationManager`.
+- `apps/web/src/types`: Shared TypeScript conversation, lead, and marketing types.
+- `apps/web/src/app/api/conversations`: Server API boundary used by the chat widget. It streams newline-delimited conversation events.
 
 ## Add A New Agent Config
 
 1. Create a new file in `apps/web/src/agents`, for example `roofing-demo.ts`.
 2. Export an `AgentConfig` object with a unique `id`, welcome message, mock responses, and CTA.
 3. Add the new config to `agentConfigs` in `apps/web/src/agents/index.ts`.
-4. Set `NEXT_PUBLIC_DEFAULT_AGENT_ID` in `.env.local` if that agent should power the floating widget by default.
+4. Set `NEXT_PUBLIC_DEFAULT_AGENT_ID` in `apps/web/.env.local` if that agent should power the floating widget by default.
 
 ## Environment
 
-Copy `.env.example` to `.env.local` when local secrets are needed.
+Copy `.env.example` to `apps/web/.env.local` and set `OPENAI_API_KEY` before using Rose locally. Do not put real secrets in `.env.example`; it is a tracked template and may be overwritten by normal repo edits.
 
-Sprint 1 only uses `NEXT_PUBLIC_DEFAULT_AGENT_ID`. The other variables are placeholders for Sprint 2 provider integration.
+The public marketing site can render with only `NEXT_PUBLIC_DEFAULT_AGENT_ID`, but the Rose AI Engine requires `OPENAI_API_KEY` for real responses.
+
+Set `OPENAI_EMBEDDING_MODEL` to change the retrieval embedding model. Mock responses are disabled by default and require `ENABLE_MOCK_AI=true`.
+
+## Rose AI Engine
+
+Rose is configured as a Senior AI Solutions Consultant in `apps/web/src/agents/nova-rose.ts`.
+
+The engine maintains:
+
+- conversation history
+- session state
+- conversation stage
+- extracted lead data
+- lead score, confidence, temperature, and recommended next action
+- vector retrieval over NovaRose service, use-case, process, and solution knowledge using OpenAI embeddings
+
+Conversation stages:
+
+- `INTRODUCTION`
+- `DISCOVERY`
+- `PAIN_DISCOVERY`
+- `SOLUTION_RECOMMENDATION`
+- `QUALIFICATION`
+- `BOOKING`
+- `COMPLETE`
+
+The widget calls `/api/conversations` and consumes streamed events. Future agents should reuse `ConversationManager` and require configuration changes first. Each turn embeds the customer query, retrieves the most relevant NovaRose knowledge chunks, and sends the retrieved context to OpenAI's Responses API.
 
 ## Sprint 2
 
-Sprint 2 should add the first real provider-backed workflow:
+The next sprint should add the first real provider-backed workflow around this engine:
 
-- OpenAI agent runtime behind a typed service boundary.
 - n8n webhook adapter for lead or booking automation.
 - Supabase schema for captured leads and conversation summaries.
 - Server Action for submitting qualified leads.
