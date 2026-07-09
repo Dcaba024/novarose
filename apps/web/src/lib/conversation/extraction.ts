@@ -180,7 +180,7 @@ function extractDesiredOutcome(message: string) {
     "better"
   ]);
 
-  return desiredOutcome ? cleanDesiredOutcome(desiredOutcome) : undefined;
+  return desiredOutcome ? cleanDesiredOutcome(extractOutcomePhrase(desiredOutcome) ?? desiredOutcome) : undefined;
 }
 
 function extractCurrentTools(message: string) {
@@ -287,6 +287,14 @@ function cleanDesiredOutcome(value: string) {
     .replace(/\bbooks\b/i, "book")
     .replace(/\bsends\b/i, "send")
     .trim();
+}
+
+function extractOutcomePhrase(value: string) {
+  const phraseMatch = value.match(
+    /\b(?:want|need|would like|are looking for|are trying to|hope|are hoping)\s+(?:help\s+)?(?:with\s+|to\s+|an?\s+)?([^.!?]{4,180})/i
+  );
+
+  return phraseMatch?.[1];
 }
 
 function extractSentenceByKeywords(message: string, keywords: string[]) {

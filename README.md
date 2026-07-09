@@ -29,7 +29,7 @@ The app uses Next.js App Router, TypeScript, and Tailwind CSS.
 - `apps/web/src/config`: Company, navigation, services, pricing, FAQ, and landing-page content.
 - `apps/web/src/components/ui`: Reusable UI primitives such as `Button`, `Section`, `Card`, `Badge`, and `Container`.
 - `apps/web/src/components/marketing`: Marketing-specific components such as `Navbar`, `Footer`, `ServiceCard`, `PricingCard`, and `FAQItem`.
-- `apps/web/src/components/agent`: Sprint 1 mock AI Sales Agent widget.
+- `apps/web/src/components/agent`: Rose chat widget, chat panel, and streamed response parser.
 - `apps/web/src/agents`: Agent configuration files for NovaRose AI and future demos.
 - `apps/web/src/lib/conversation`: Reusable conversation engine, stage resolver, lead extraction, scoring, OpenAI Responses + embeddings RAG service, and `ConversationManager`.
 - `apps/web/src/types`: Shared TypeScript conversation, lead, and marketing types.
@@ -77,10 +77,23 @@ The widget calls `/api/conversations` and consumes streamed events. Future agent
 
 ## Sprint 2
 
-The next sprint should add the first real provider-backed workflow around this engine:
+Sprint 2 built the Rose AI Engine on top of the marketing site:
 
-- n8n webhook adapter for lead or booking automation.
-- Supabase schema for captured leads and conversation summaries.
-- Server Action for submitting qualified leads.
-- Basic admin-safe logging and error handling.
-- One industry demo agent wired to real form or chat submission.
+- Config-driven agent profiles with `AgentConfig`.
+- A reusable `ConversationManager` for conversation state and stage transitions.
+- Lead extraction, scoring, temperature, and recommended next action logic.
+- OpenAI Responses API support for real streamed responses.
+- OpenAI embeddings retrieval over NovaRose service, use-case, process, problem, and solution knowledge.
+- Explicit mock mode for local demos with `ENABLE_MOCK_AI=true`.
+- A streamed `/api/conversations` route used by the floating Rose chat widget.
+
+## Deferred To Sprint 3
+
+Do not add these yet:
+
+- n8n workflow automation.
+- Supabase persistence.
+- Authentication.
+- Admin dashboards.
+- CRM integrations.
+- Payments.

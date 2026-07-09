@@ -1,6 +1,6 @@
 import type { AgentConfig } from "./types";
 
-export const novaRoseAgent: AgentConfig = {
+export const novaRoseAgent = {
   id: "nova-rose",
   name: "Rose",
   label: "Rose AI Consultant",
@@ -51,4 +51,4 @@ export const novaRoseAgent: AgentConfig = {
     name: "gpt-4o-mini",
     temperature: 0.45
   }
-};
+} satisfies AgentConfig;

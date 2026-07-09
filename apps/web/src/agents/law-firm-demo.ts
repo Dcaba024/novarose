@@ -1,6 +1,6 @@
 import type { AgentConfig } from "./types";
 
-export const lawFirmDemoAgent: AgentConfig = {
+export const lawFirmDemoAgent = {
   id: "law-firm-demo",
   name: "Rose",
   label: "Rose Legal Intake Demo",
@@ -51,4 +51,4 @@ export const lawFirmDemoAgent: AgentConfig = {
     name: "gpt-4o-mini",
     temperature: 0.35
   }
-};
+} satisfies AgentConfig;
