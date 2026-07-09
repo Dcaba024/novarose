@@ -3,7 +3,7 @@ import type { FAQ, NavItem, PricingPlan, ProcessStep, Service, UseCase } from "@
 export const companyConfig = {
   name: "NovaRose AI",
   domain: "novaroseai.com",
-  email: "hello@novaroseai.com",
+  email: "contact@caballerotechnologies.com",
   tagline:
     "AI systems that help businesses capture more leads, respond instantly, and automate repetitive work."
 } as const;

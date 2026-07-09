@@ -105,7 +105,7 @@ function AgentChatComposer({
         <CalendarDays aria-hidden="true" size={16} />
         {agent.bookCallLabel}
       </ButtonLink>
-      <form className="flex gap-2" onSubmit={onSubmit}>
+      <form autoComplete="off" className="flex gap-2" onSubmit={onSubmit}>
         <label className="sr-only" htmlFor="agent-message">
           Message AI Sales Agent
         </label>
@@ -113,6 +113,7 @@ function AgentChatComposer({
           className="min-h-11 flex-1 rounded-full border border-white/12 bg-white/[0.05] px-4 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[rgba(94,241,197,0.46)]"
           disabled={isResponding}
           id="agent-message"
+          autoComplete="off"
           onChange={(event) => onInputChange(event.target.value)}
           placeholder="Type a message..."
           value={input}

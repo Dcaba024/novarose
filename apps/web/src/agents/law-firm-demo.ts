@@ -45,7 +45,7 @@ export const lawFirmDemoAgent = {
     "This demo response shows how an industry-specific agent can reuse the NovaRose AI foundation."
   ],
   bookCallLabel: "Request consultation",
-  ctaHref: "mailto:hello@novaroseai.com?subject=Law%20Firm%20AI%20Demo",
+  ctaHref: "mailto:contact@caballerotechnologies.com?subject=Law%20Firm%20AI%20Demo",
   model: {
     provider: "openai",
     name: "gpt-4o-mini",

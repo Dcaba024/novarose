@@ -45,7 +45,7 @@ export const novaRoseAgent = {
     "There may be a strong automation fit here. The best first workflow is usually the one tied to missed revenue, slow response, or repeated admin work."
   ],
   bookCallLabel: "Book a call",
-  ctaHref: "mailto:hello@novaroseai.com?subject=NovaRose%20AI%20Automation%20Call",
+  ctaHref: "mailto:contact@caballerotechnologies.com?subject=NovaRose%20AI%20Automation%20Call",
   model: {
     provider: "openai",
     name: "gpt-4o-mini",
