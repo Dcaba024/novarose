@@ -11,6 +11,7 @@ type AgentChatPanelProps = {
   input: string;
   isResponding: boolean;
   onClose: () => void;
+  onConsultationRequest: () => void;
   onInputChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };
@@ -21,6 +22,7 @@ export function AgentChatPanel({
   input,
   isResponding,
   onClose,
+  onConsultationRequest,
   onInputChange,
   onSubmit
 }: AgentChatPanelProps) {
@@ -35,6 +37,7 @@ export function AgentChatPanel({
         agent={agent}
         input={input}
         isResponding={isResponding}
+        onConsultationRequest={onConsultationRequest}
         onInputChange={onInputChange}
         onSubmit={onSubmit}
       />
@@ -96,12 +99,22 @@ function AgentChatComposer({
   agent,
   input,
   isResponding,
+  onConsultationRequest,
   onInputChange,
   onSubmit
-}: Pick<AgentChatPanelProps, "agent" | "input" | "isResponding" | "onInputChange" | "onSubmit">) {
+}: Pick<
+  AgentChatPanelProps,
+  "agent" | "input" | "isResponding" | "onConsultationRequest" | "onInputChange" | "onSubmit"
+>) {
   return (
     <div className="border-t border-white/10 p-4">
-      <ButtonLink className="mb-3 w-full" href={agent.ctaHref} size="sm" variant="secondary">
+      <ButtonLink
+        className="mb-3 w-full"
+        href={agent.ctaHref}
+        onClick={onConsultationRequest}
+        size="sm"
+        variant="secondary"
+      >
         <CalendarDays aria-hidden="true" size={16} />
         {agent.bookCallLabel}
       </ButtonLink>

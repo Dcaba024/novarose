@@ -19,6 +19,21 @@ export function AiSalesAgentWidget() {
     createInitialConversationState(agent)
   );
 
+  function handleConsultationRequest() {
+    void fetch("/api/automations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        agentId: agent.id,
+        eventType: "CONSULTATION_REQUESTED",
+        state: conversationState
+      }),
+      keepalive: true
+    }).catch(() => undefined);
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -120,6 +135,7 @@ export function AiSalesAgentWidget() {
           input={input}
           isResponding={isResponding}
           onClose={() => setIsOpen(false)}
+          onConsultationRequest={handleConsultationRequest}
           onInputChange={setInput}
           onSubmit={handleSubmit}
         />

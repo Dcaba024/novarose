@@ -9,6 +9,11 @@ export function scoreLead(lead: LeadData): LeadScore {
     reasons.push("Visitor shared a name.");
   }
 
+  if (lead.email || lead.phone) {
+    score += 12;
+    reasons.push("Visitor shared contact details.");
+  }
+
   if (lead.company) {
     score += 10;
     reasons.push("Company context is available.");
@@ -66,7 +71,7 @@ export function scoreLead(lead: LeadData): LeadScore {
 
   const cappedScore = Math.min(score, 100);
   const completedFields = Object.values(lead).filter(Boolean).length;
-  const confidence = Math.min(Math.round((completedFields / 13) * 100), 100);
+  const confidence = Math.min(Math.round((completedFields / 15) * 100), 100);
 
   if (cappedScore >= 70) {
     return {

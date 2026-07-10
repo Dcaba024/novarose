@@ -21,6 +21,8 @@ export type ConversationMessage = {
 
 export type LeadData = {
   name?: string;
+  email?: string;
+  phone?: string;
   company?: string;
   industry?: string;
   employeeCount?: string;

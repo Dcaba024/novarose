@@ -40,6 +40,8 @@ export function extractLeadData(message: string, previousLead: LeadData): LeadDa
   return removeEmptyFields({
     ...previousLead,
     name: previousLead.name ?? extractName(normalizedMessage),
+    email: previousLead.email ?? extractEmail(normalizedMessage),
+    phone: previousLead.phone ?? extractPhone(normalizedMessage),
     company: previousLead.company ?? extractCompany(normalizedMessage),
     industry: previousLead.industry ?? extractIndustry(lowerMessage),
     employeeCount: previousLead.employeeCount ?? extractEmployeeCount(lowerMessage),
@@ -53,6 +55,15 @@ export function extractLeadData(message: string, previousLead: LeadData): LeadDa
     timeline: previousLead.timeline ?? extractTimeline(lowerMessage),
     serviceInterest: extractServiceInterest(lowerMessage) ?? previousLead.serviceInterest
   });
+}
+
+function extractEmail(message: string) {
+  return message.match(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i)?.[0].toLowerCase();
+}
+
+function extractPhone(message: string) {
+  const phoneMatch = message.match(/\b(?:\+?1[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}\b/);
+  return phoneMatch?.[0]?.replace(/\s+/g, " ").trim();
 }
 
 function extractName(message: string) {

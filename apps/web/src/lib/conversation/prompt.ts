@@ -62,6 +62,8 @@ function getLatestUserMessage(state: ConversationSessionState) {
 function formatLeadData(lead: LeadData) {
   const fields: Array<[keyof LeadData, string]> = [
     ["name", "Name"],
+    ["email", "Email"],
+    ["phone", "Phone"],
     ["company", "Company"],
     ["industry", "Industry"],
     ["employeeCount", "Team size"],

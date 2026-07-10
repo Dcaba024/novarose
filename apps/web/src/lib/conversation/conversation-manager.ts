@@ -1,4 +1,6 @@
 import type { AgentConfig } from "@/agents";
+import { createAutomationEventRouter, type AutomationEventRouter } from "@/lib/automations/automation-event-router";
+import type { AutomationEventType, AutomationResult } from "@/lib/automations/types";
 import type {
   ConversationMessage,
   ConversationSessionState,
@@ -16,15 +18,18 @@ export type ConversationManagerOptions = {
   agent: AgentConfig;
   initialState?: ConversationSessionState;
   aiService?: AiService;
+  automationEventRouter?: AutomationEventRouter;
 };
 
 export class ConversationManager {
   private state: ConversationSessionState;
   private readonly aiService: AiService;
+  private readonly automationEventRouter: AutomationEventRouter;
 
   constructor(private readonly options: ConversationManagerOptions) {
     this.state = options.initialState ?? createInitialConversationState(options.agent);
     this.aiService = options.aiService ?? createAiService();
+    this.automationEventRouter = options.automationEventRouter ?? createAutomationEventRouter();
   }
 
   getState() {
@@ -32,7 +37,10 @@ export class ConversationManager {
   }
 
   async sendMessage(content: string): Promise<ConversationTurnResult> {
+    const previousState = this.state;
     const preparedState = this.applyUserMessage(content);
+    this.queueAutomationEvents(previousState, preparedState, content);
+
     const response = await this.aiService.complete({
       agent: this.options.agent,
       state: preparedState,
@@ -49,7 +57,10 @@ export class ConversationManager {
   }
 
   async *streamMessage(content: string): AsyncIterable<ConversationStreamEvent> {
+    const previousState = this.state;
     const preparedState = this.applyUserMessage(content);
+    this.queueAutomationEvents(previousState, preparedState, content);
+
     let response = "";
 
     try {
@@ -80,6 +91,33 @@ export class ConversationManager {
         message: getPublicAiErrorMessage(error)
       };
     }
+  }
+
+  async trackAutomationEvent(eventType: AutomationEventType): Promise<AutomationResult[]> {
+    try {
+      return await this.automationEventRouter.route({
+        previousState: this.state,
+        currentState: this.state,
+        requestedEventType: eventType
+      });
+    } catch (error) {
+      logAutomationRoutingFailure(error);
+      return [];
+    }
+  }
+
+  private queueAutomationEvents(
+    previousState: ConversationSessionState,
+    currentState: ConversationSessionState,
+    userMessage: string
+  ) {
+    void this.automationEventRouter
+      .route({
+        previousState,
+        currentState,
+        userMessage
+      })
+      .catch(logAutomationRoutingFailure);
   }
 
   private applyUserMessage(content: string): ConversationSessionState {
@@ -120,4 +158,14 @@ export class ConversationManager {
       updatedAt: new Date().toISOString()
     };
   }
+}
+
+function logAutomationRoutingFailure(error: unknown) {
+  if (process.env.NODE_ENV !== "development") {
+    return;
+  }
+
+  console.error("[automation] routing failed", {
+    message: error instanceof Error ? error.message : "Automation routing failed."
+  });
 }
